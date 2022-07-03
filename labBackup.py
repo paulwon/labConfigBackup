@@ -37,7 +37,7 @@ def readAppConfig():
 def backupConfig():
     for configLine in configList:
         vendor = configLine[0].strip()
-        # Skip the comment line (fist line with "#")
+        # Skip the comment line (first line with "#")
         if vendor[0] == "#":
             continue
         type = configLine[1].strip()
