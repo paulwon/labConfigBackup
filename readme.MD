@@ -19,7 +19,7 @@ A file named "devicesList.csv" with the following format needs to be placed unde
     netgear, ssh, site3netgear,192.168.1.3:1303,admin,password
     extreme networks, exos, ssh, site2exos, 192.168.1.4:1318, admin, password
 
-### Custom the configuration save directory
+### Customize the configuration save directory
 If a file named "appConfig.ini" with the format like below is placed under the same directory where the script exists, the device configuration will be saved to the directory configured in "appConfig.ini". If the file "appConfig.ini" doesn't exit, the device configuration will be saved under the same director where the script runs.
 
     [appConfig]
