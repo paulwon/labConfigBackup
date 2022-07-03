@@ -1,5 +1,5 @@
 # Lab Configuration Backup
-Python script to backup runnning config for mutiple networ devices (switch, firewall, etc) provided as a csv file. 
+Python script to backup runnning config for mutiple network devices (switch, firewall, etc) provided as a csv file. 
 ## Support backup methods
 - API (for Palo Alto)
 - SSH 
