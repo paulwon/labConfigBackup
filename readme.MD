@@ -4,7 +4,7 @@ Python script to backup runnning config for mutiple networ devices (switch, fire
 - API (for Palo Alto)
 - SSH 
 ## Supported vendors
-- Palo Also
+- Palo Alto
 - Cisco
 - Netgear
 
