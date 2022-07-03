@@ -1,10 +1,8 @@
 import os
 import time
 import requests
-import configparser
 from datetime import datetime
 import csv
-from xml.etree import ElementTree
 import xmltodict
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 import paramiko
