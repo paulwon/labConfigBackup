@@ -114,9 +114,9 @@ def netgearBackupConfig(systemName, ip, port, username, password):
     chan.send('sh run\n')
     time.sleep(5)
     output = chan.recv(999999)
-    f1 = open(fileName, 'a')
-    f1.write(output.decode("utf-8") )
-    f1.close()
+    file = open(fileName, 'a')
+    file.write(output.decode("utf-8") )
+    file.close()
     ssh.close()
 
 if __name__ == "__main__":
