@@ -11,7 +11,7 @@ Python script to backup runnning config for mutiple network devices (switch, fir
 
 ## Usage
 ### Applicaiton configuraiton file
-A file named "appConfig.csv" with the following format needs to be placed under the same directory where the script runs.
+A file named "devicesList.csv" with the following format needs to be placed under the same directory where the script exits.
 
     # vender, os, method, systemName, ip, username, password
     palo alto, api, pa500, 192.168.1.1:443,admin, password
@@ -19,4 +19,9 @@ A file named "appConfig.csv" with the following format needs to be placed under 
     netgear, ssh, site3netgear,192.168.1.3:1303,admin,password
     extreme networks, exos, ssh, site2exos, 192.168.1.4:1318, admin, password
 
+### Custom the configuration save directory
+If a file named "appConfig.ini" with the format like below is placed under the same directory where the script exists, the device configuration will be saved to the directory configured in "appConfig.ini". If the file "appConfig.ini" doesn't exit, the device configuration will be saved under the same director where the script runs.
+
+    [appConfig]
+    configSaveDirectory:/where/to/save/the/config/
 

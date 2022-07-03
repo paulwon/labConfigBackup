@@ -1,3 +1,4 @@
+import configparser
 import os
 import time
 import requests
@@ -10,11 +11,8 @@ import paramiko
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
-# configSaveDirectory = "/Users/zqwang/Library/CloudStorage/OneDrive-Personal/labConfigBackup/backupViaScript/"
-configSaveDirectory = "./"
-
-appConfigFile = os.path.dirname(os.path.realpath(__file__)) + "/appConfig.csv"
-configList = []
+devicesListFile = os.path.dirname(os.path.realpath(__file__)) + "/devicesList.csv"
+devicesList = []
 dataFormat = '%Y%m%d_%H%M%S'
 
 def printMsgAndExit(msg):
@@ -25,15 +23,15 @@ def printMsgAndExit(msg):
 
 def readAppConfig():
     '''
-    Read the application config file in the csv format
+    Read the devices list in the csv format
     '''
-    if not os.path.exists(appConfigFile):
-        printMsgAndExit("The config file" +  appConfigFile + " does not exit") 
-    print("Reading config from", appConfigFile)
-    global configList
-    with open(appConfigFile, newline='') as f:
+    if not os.path.exists(devicesListFile):
+        printMsgAndExit("The config file" +  devicesListFile + " does not exit") 
+    print("Reading config from", devicesListFile)
+    global devicesList
+    with open(devicesListFile, newline='') as f:
         reader = csv.reader(f)
-        configList = list(reader)
+        devicesList = list(reader)
     # print(configList) 
 
 
@@ -41,7 +39,7 @@ def backupConfig():
     '''
     Loop through the csv file to do backup for each device
     '''
-    for configLine in configList:
+    for configLine in devicesList:
         vendor = configLine[0].strip()
         # Skip the comment line (first line with "#")
         if vendor[0] == "#":
@@ -159,5 +157,15 @@ def exosBackupConfig(systemName, ip, port, username, password):
     outfile.close()
 
 if __name__ == "__main__":
+    if os.path.exists(os.path.dirname(os.path.realpath(__file__)) + "/appConfig.ini"):
+        print("Reading the config save dirctory from the app configuraton file 'appConfig.ini")
+        config = configparser.ConfigParser()
+        config.read(os.path.dirname(os.path.realpath(__file__)) + "/appConfig.ini")
+        configSaveDirectory = config.get("appConfig", "configSaveDirectory").strip()
+        
+    else:
+        print("Config files will be saved to the same direcotry where the script runs because the file 'appConfig.ini' does not exits")
+        configSaveDirectory = "./"
+        
     readAppConfig()
     backupConfig()
