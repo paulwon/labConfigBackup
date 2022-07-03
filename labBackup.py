@@ -10,8 +10,8 @@ import paramiko
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
-configSaveDirectory = "/Users/zqwang/Library/CloudStorage/OneDrive-Personal/labConfigBackup/backupViaScript/"
-# configSaveDirectory = "./"
+# configSaveDirectory = "/Users/zqwang/Library/CloudStorage/OneDrive-Personal/labConfigBackup/backupViaScript/"
+configSaveDirectory = "./"
 
 appConfigFile = os.path.dirname(os.path.realpath(__file__)) + "/appConfig.csv"
 configList = []
@@ -24,6 +24,9 @@ def printMsgAndExit(msg):
 
 
 def readAppConfig():
+    '''
+    Read the application config file in the csv format
+    '''
     if not os.path.exists(appConfigFile):
         printMsgAndExit("The config file" +  appConfigFile + " does not exit") 
     print("Reading config from", appConfigFile)
@@ -35,43 +38,45 @@ def readAppConfig():
 
 
 def backupConfig():
+    '''
+    Loop through the csv file to do backup for each device
+    '''
     for configLine in configList:
         vendor = configLine[0].strip()
         # Skip the comment line (first line with "#")
         if vendor[0] == "#":
             continue
-        type = configLine[1].strip()
-        systemName = configLine[2].strip()
-        ip =  configLine[3].strip().split(":")[0]
-        port = configLine[3].strip().split(":")[1]
-        username = configLine[4].strip()
-        password = configLine[5].strip()
+        os = configLine[1].strip()
+        type = configLine[2].strip()
+        systemName = configLine[3].strip()
+        ip =  configLine[4].strip().split(":")[0]
+        port = configLine[4].strip().split(":")[1]
+        username = configLine[5].strip()
+        password = configLine[6].strip()
 
-        if vendor == "palo alto" and type == "api":
+        if vendor.lower() == "palo alto" and os.lower() == "pan-os" and type.lower() == "api":
             paBackupConfig(systemName, ip, port, username, password)
-        if vendor == "cisco" and type == "ssh":
+        if vendor.lower() == "cisco" and os.lower() == "ios"  and type.lower() == "ssh":
             ciscoBackupConfig(systemName, ip, port, username, password)
-        if vendor == "netgear" and type == "ssh":
+        if vendor.lower() == "netgear" and os.lower() == "prosafe" and type.lower() == "ssh":
             netgearBackupConfig(systemName, ip, port, username, password)
+        if vendor.lower() == "extreme networks" and os.lower() == "exos" and type.lower() == "ssh":
+            exosBackupConfig(systemName, ip, port, username, password)
     print("Backup has been and and can be found at", configSaveDirectory )
 
-# Backup for palo alto
 
 def paBackupConfig(systemName, ip, port, username, password):
+    '''
+    Backup for palo alto pan-os devices
+    '''
     print("Doing the config bakcup for", systemName)
     apiToken = paGetApiToken(ip, port, username, password)
     paGetbackupFile(systemName, ip, port, apiToken )
 
-def paGetbackupFile(systemName, ip, port, apiToken):
-    url = "https://{}:{}/api/?type=export&category=configuration&key={}".format(ip,port, apiToken)
-    response = requests.get(url, verify=False)
-    fileName = configSaveDirectory + systemName + "_"+ datetime.now().strftime(dataFormat) + ".xml"
-    with open(fileName, "w") as f:
-        f.write(response.text)
-    f.close()
-
 def paGetApiToken(ip, port, username, password):
-    
+    '''
+    Get the api key first before doing the API call against palo alto devices 
+    '''
     url =  "https://{}:{}/api/?type=keygen&user={}&password={}".format(ip, port, username, password)
     # print("Request the URL", url)
     response = requests.get(url, verify=False)
@@ -81,10 +86,24 @@ def paGetApiToken(ip, port, username, password):
     # print("apiKey is", apiKey)
     return apiKey
 
-# Backup for Cisco
+
+def paGetbackupFile(systemName, ip, port, apiToken):
+    '''
+    Get palo alto backup xml file via API call
+    '''
+    url = "https://{}:{}/api/?type=export&category=configuration&key={}".format(ip,port, apiToken)
+    response = requests.get(url, verify=False)
+    fileName = configSaveDirectory + systemName + "_"+ datetime.now().strftime(dataFormat) + ".xml"
+    with open(fileName, "w") as f:
+        f.write(response.text)
+    f.close()
+
+
 
 def ciscoBackupConfig(systemName, ip, port, username, password):
-    
+    '''
+    Backup for Cisco
+    '''
     print("Doing the config bakcup for", systemName)
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -98,8 +117,10 @@ def ciscoBackupConfig(systemName, ip, port, username, password):
     ssh.close()
     outfile.close()
 
-# Backup for netgear
 def netgearBackupConfig(systemName, ip, port, username, password):
+    '''
+    Backup for netgear
+    '''
     print("Doing the config bakcup for", systemName)
     fileName = configSaveDirectory + systemName + "_"+ datetime.now().strftime(dataFormat) + ".txt"
     ssh = paramiko.SSHClient()
@@ -118,6 +139,24 @@ def netgearBackupConfig(systemName, ip, port, username, password):
     file.write(output.decode("utf-8") )
     file.close()
     ssh.close()
+
+
+def exosBackupConfig(systemName, ip, port, username, password):
+    '''
+    Backup for Extreme EXOS
+    '''
+    print("Doing the config bakcup for", systemName)
+    ssh = paramiko.SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    ssh.connect(hostname=ip, username=username, password=password, port=port)
+    stdin, stdout, stderr = ssh.exec_command('show config')
+    fileName = configSaveDirectory + systemName + "_"+ datetime.now().strftime(dataFormat) + ".txt"
+    list = stdout.readlines()
+    outfile = open(fileName, "w")
+    for char in list:
+        outfile.write(char)
+    ssh.close()
+    outfile.close()
 
 if __name__ == "__main__":
     readAppConfig()
