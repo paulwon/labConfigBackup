@@ -1,15 +1,16 @@
-# Python script to backup runnning config
-## Support method
+# Lab Configuration Backup
+Python script to backup runnning config for mutiple networ devices (switch, firewall, etc) provided as a csv file. 
+## Support backup methods
 - API (for Palo Alto)
 - SSH 
-## Supported vendor
+## Supported vendors
 - Palo Also
 - Cisco
 - Netgear
 
 ## Usage
 ### Applicaiton configuraiton file
-A file named "appConfig.csv" with the following format needs to placed under the same directory where the script exist.
+A file named "appConfig.csv" with the following format needs to be placed under the same directory where the script runs.
 
     # vender, method, systemName, ip, username, password
     palo alto, api, pa500, 192.168.1.1:443,admin, password

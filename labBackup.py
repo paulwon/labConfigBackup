@@ -15,7 +15,7 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 configSaveDirectory = "/Users/zqwang/Library/CloudStorage/OneDrive-Personal/labConfigBackup/backupViaScript/"
 # configSaveDirectory = "./"
 
-appConfigFile = "./appConfig.csv"
+appConfigFile = os.path.dirname(os.path.realpath(__file__)) + "/appConfig.csv"
 configList = []
 dataFormat = '%Y%m%d_%H%M%S'
 
@@ -27,7 +27,7 @@ def printMsgAndExit(msg):
 
 def readAppConfig():
     if not os.path.exists(appConfigFile):
-        printMsgAndExit("The config file", appConfigFile) 
+        printMsgAndExit("The config file" +  appConfigFile + " does not exit") 
     print("Reading config from", appConfigFile)
     global configList
     with open(appConfigFile, newline='') as f:
