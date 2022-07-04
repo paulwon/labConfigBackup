@@ -39,18 +39,18 @@ def backupConfig():
     '''
     Loop through the csv file to do backup for each device
     '''
-    for configLine in devicesList:
-        vendor = configLine[0].strip()
+    for device in devicesList:
+        vendor = device[0].strip()
         # Skip the comment line (first line with "#")
         if vendor[0] == "#":
             continue
-        os = configLine[1].strip()
-        type = configLine[2].strip()
-        systemName = configLine[3].strip()
-        ip =  configLine[4].strip().split(":")[0]
-        port = configLine[4].strip().split(":")[1]
-        username = configLine[5].strip()
-        password = configLine[6].strip()
+        os = device[1].strip()
+        type = device[2].strip()
+        systemName = device[3].strip()
+        ip =  device[4].strip().split(":")[0]
+        port = device[4].strip().split(":")[1]
+        username = device[5].strip()
+        password = device[6].strip()
 
         if vendor.lower() == "palo alto" and os.lower() == "pan-os" and type.lower() == "api":
             paBackupConfig(systemName, ip, port, username, password)
