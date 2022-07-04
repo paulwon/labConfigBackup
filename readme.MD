@@ -14,9 +14,9 @@ Python script to backup runnning config for mutiple network devices (switch, fir
 A file named "devicesList.csv" with the following format needs to be placed under the same directory where the script exits.
 
     # vender, os, method, systemName, ip, username, password
-    palo alto, api, pa500, 192.168.1.1:443,admin, password
-    cisco, ssh, site2cisco, 192.168.1.2:1317,adin, password
-    netgear, ssh, site3netgear,192.168.1.3:1303,admin,password
+    palo alto, pan-os, api, pa500, 192.168.1.1:443,admin, password
+    cisco, ios, ssh, site2cisco, 192.168.1.2:1317,adin, password
+    netgear, prosafe, ssh, site3netgear,192.168.1.3:1303,admin,password
     extreme networks, exos, ssh, site2exos, 192.168.1.4:1318, admin, password
 
 ### Customize the configuration save directory
